@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
-function ProductDetail() {
-  const { id } = useParams();
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+}
 
-  const [product, setProduct] = useState(null);
+function ProductDetail() {
+  const { id } = useParams<{ id: string }>();
+
+  const [product, setProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     fetch(`https://shoe-store-backend-rkuw.onrender.com/api/products/${id}`)
       .then((res) => res.json())
-      .then((data) => setProduct(data));
+      .then((data: Product) => setProduct(data))
+      .catch((err) => console.error(err));
   }, [id]);
 
   if (!product) {
@@ -31,27 +40,27 @@ function ProductDetail() {
         </Link>
 
         <div className="grid gap-10 md:grid-cols-2">
-         
           <div>
             <img
               src={product.image}
               alt={product.name}
-              className=" w-full rounded-xl object-cover"
+              className="w-full rounded-xl object-cover"
             />
           </div>
 
-          {/* Thông tin */}
           <div className="flex flex-col justify-center">
             <h1 className="mb-4 text-4xl font-bold text-gray-800">
               {product.name}
             </h1>
 
             <p className="mb-6 text-3xl font-bold text-red-500">
-              {product.price?.toLocaleString()} VNĐ
+              {product.price.toLocaleString()} VNĐ
             </p>
 
             <div className="mb-6 rounded-lg bg-gray-50 p-4">
-              <h3 className="mb-2 text-lg font-semibold">Mô tả sản phẩm</h3>
+              <h3 className="mb-2 text-lg font-semibold">
+                Mô tả sản phẩm
+              </h3>
               <p className="leading-7 text-gray-600">
                 {product.description}
               </p>
