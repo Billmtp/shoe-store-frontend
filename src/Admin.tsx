@@ -53,6 +53,7 @@ function Admin() {
     setEditingId(p.id);
     setForm({ name: p.name, price: String(p.price), image: p.image, description: p.description });
     setShowForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSubmit = async () => {
@@ -61,7 +62,6 @@ function Admin() {
       return;
     }
     const body = { ...form, price: Number(form.price) };
-
     if (editingId) {
       const res = await fetch(`${API}/${editingId}`, {
         method: "PUT",
@@ -79,7 +79,6 @@ function Admin() {
       if (res.ok) notify("✅ Thêm thành công");
       else notify("❌ Lỗi thêm sản phẩm");
     }
-
     setShowForm(false);
     setForm(emptyForm);
     setEditingId(null);
@@ -100,113 +99,100 @@ function Admin() {
     setEditingId(null);
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "10px 12px",
+    border: "1px solid #d1d5db",
+    borderRadius: 8,
+    fontSize: 16,
+    boxSizing: "border-box",
+  };
+
   return (
-    <div style={{ maxWidth: 960, margin: "0 auto", padding: 24, fontFamily: "sans-serif" }}>
-      <h1 style={{ marginBottom: 20 }}>Quản lý sản phẩm</h1>
+    <div style={{ maxWidth: 680, margin: "0 auto", padding: "16px 16px 40px", fontFamily: "sans-serif" }}>
+      <h1 style={{ fontSize: 22, marginBottom: 16 }}>Quản lý sản phẩm</h1>
 
       {msg && (
-        <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 6, padding: "10px 16px", marginBottom: 16, color: "#166534" }}>
+        <div style={{ background: "#f0fdf4", border: "1px solid #86efac", borderRadius: 8, padding: "10px 14px", marginBottom: 14, color: "#166534", fontSize: 14 }}>
           {msg}
         </div>
       )}
 
+      {/* Form thêm / sửa */}
       {showForm && (
-        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: 20, marginBottom: 24 }}>
-          <h2 style={{ marginBottom: 16, fontSize: 18 }}>{editingId ? "Sửa sản phẩm" : "Thêm sản phẩm"}</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+        <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 18, marginBottom: 20 }}>
+          <h2 style={{ fontSize: 17, marginBottom: 14 }}>{editingId ? "Sửa sản phẩm" : "Thêm sản phẩm"}</h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div>
-              <label style={{ display: "block", fontSize: 13, marginBottom: 4 }}>Tên sản phẩm</label>
-              <input name="name" value={form.name} onChange={handleChange} placeholder="Nike Air Max 90"
-                style={{ width: "100%", padding: "8px 10px", border: "1px solid #d1d5db", borderRadius: 6, fontSize: 14 }} />
+              <label style={{ display: "block", fontSize: 13, marginBottom: 5, fontWeight: 500 }}>Tên sản phẩm</label>
+              <input name="name" value={form.name} onChange={handleChange} placeholder="Nike Air Max 90" style={inputStyle} />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: 13, marginBottom: 4 }}>Giá (VNĐ)</label>
-              <input name="price" value={form.price} onChange={handleChange} type="number" placeholder="1200000"
-                style={{ width: "100%", padding: "8px 10px", border: "1px solid #d1d5db", borderRadius: 6, fontSize: 14 }} />
+              <label style={{ display: "block", fontSize: 13, marginBottom: 5, fontWeight: 500 }}>Giá (VNĐ)</label>
+              <input name="price" value={form.price} onChange={handleChange} type="number" placeholder="1200000" style={inputStyle} />
             </div>
-          </div>
-          <div style={{ marginBottom: 12 }}>
-            <label style={{ display: "block", fontSize: 13, marginBottom: 4 }}>Link ảnh</label>
-            <input name="image" value={form.image} onChange={handleChange} placeholder="https://..."
-              style={{ width: "100%", padding: "8px 10px", border: "1px solid #d1d5db", borderRadius: 6, fontSize: 14 }} />
-          </div>
-          <div style={{ marginBottom: 16 }}>
-            <label style={{ display: "block", fontSize: 13, marginBottom: 4 }}>Mô tả</label>
-            <textarea name="description" value={form.description} onChange={handleChange} rows={3} placeholder="Mô tả sản phẩm..."
-              style={{ width: "100%", padding: "8px 10px", border: "1px solid #d1d5db", borderRadius: 6, fontSize: 14, resize: "vertical" }} />
-          </div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={handleSubmit}
-              style={{ background: "#2563eb", color: "#fff", border: "none", borderRadius: 6, padding: "8px 20px", fontSize: 14, cursor: "pointer" }}>
-              {editingId ? "Cập nhật" : "Thêm sản phẩm"}
-            </button>
-            <button onClick={handleCancel}
-              style={{ background: "#f3f4f6", color: "#374151", border: "1px solid #d1d5db", borderRadius: 6, padding: "8px 16px", fontSize: 14, cursor: "pointer" }}>
-              Hủy
-            </button>
+            <div>
+              <label style={{ display: "block", fontSize: 13, marginBottom: 5, fontWeight: 500 }}>Link ảnh</label>
+              <input name="image" value={form.image} onChange={handleChange} placeholder="https://..." style={inputStyle} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 13, marginBottom: 5, fontWeight: 500 }}>Mô tả</label>
+              <textarea name="description" value={form.description} onChange={handleChange} rows={3} placeholder="Mô tả sản phẩm..."
+                style={{ ...inputStyle, resize: "vertical" }} />
+            </div>
+            <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+              <button onClick={handleSubmit}
+                style={{ flex: 1, background: "#2563eb", color: "#fff", border: "none", borderRadius: 8, padding: "12px", fontSize: 15, cursor: "pointer", fontWeight: 500 }}>
+                {editingId ? "Cập nhật" : "Thêm sản phẩm"}
+              </button>
+              <button onClick={handleCancel}
+                style={{ flex: 1, background: "#f3f4f6", color: "#374151", border: "1px solid #d1d5db", borderRadius: 8, padding: "12px", fontSize: 15, cursor: "pointer" }}>
+                Hủy
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {!showForm && (
         <button onClick={openAdd}
-          style={{ background: "#2563eb", color: "#fff", border: "none", borderRadius: 6, padding: "9px 18px", fontSize: 14, cursor: "pointer", marginBottom: 20 }}>
+          style={{ width: "100%", background: "#2563eb", color: "#fff", border: "none", borderRadius: 8, padding: "12px", fontSize: 15, cursor: "pointer", marginBottom: 18, fontWeight: 500 }}>
           + Thêm sản phẩm
         </button>
       )}
 
       {loading ? (
-        <p>Đang tải...</p>
+        <p style={{ textAlign: "center", color: "#9ca3af" }}>Đang tải...</p>
+      ) : products.length === 0 ? (
+        <p style={{ textAlign: "center", color: "#9ca3af", padding: 32 }}>Chưa có sản phẩm nào</p>
       ) : (
-        <div style={{ border: "1px solid #e5e7eb", borderRadius: 8, overflow: "hidden" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr style={{ background: "#f9fafb" }}>
-                <th style={{ padding: "10px 14px", textAlign: "left", fontSize: 13, color: "#6b7280", borderBottom: "1px solid #e5e7eb" }}>Ảnh</th>
-                <th style={{ padding: "10px 14px", textAlign: "left", fontSize: 13, color: "#6b7280", borderBottom: "1px solid #e5e7eb" }}>Tên</th>
-                <th style={{ padding: "10px 14px", textAlign: "left", fontSize: 13, color: "#6b7280", borderBottom: "1px solid #e5e7eb" }}>Giá</th>
-                <th style={{ padding: "10px 14px", textAlign: "left", fontSize: 13, color: "#6b7280", borderBottom: "1px solid #e5e7eb" }}>Mô tả</th>
-                <th style={{ padding: "10px 14px", textAlign: "left", fontSize: 13, color: "#6b7280", borderBottom: "1px solid #e5e7eb" }}>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p) => (
-                <tr key={p.id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                  <td style={{ padding: "10px 14px" }}>
-                    <img src={p.image} alt={p.name}
-                      style={{ width: 56, height: 56, objectFit: "cover", borderRadius: 6, background: "#f3f4f6" }}
-                      onError={(e) => { (e.target as HTMLImageElement).src = "https://via.placeholder.com/56"; }} />
-                  </td>
-                  <td style={{ padding: "10px 14px", fontWeight: 500, fontSize: 14 }}>{p.name}</td>
-                  <td style={{ padding: "10px 14px", fontSize: 14 }}>{p.price.toLocaleString("vi-VN")} ₫</td>
-                  <td style={{ padding: "10px 14px", fontSize: 13, color: "#6b7280", maxWidth: 240 }}>
-                    <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                      {p.description}
-                    </span>
-                  </td>
-                  <td style={{ padding: "10px 14px" }}>
-                    <div style={{ display: "flex", gap: 6 }}>
-                      <button onClick={() => openEdit(p)}
-                        style={{ background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d", borderRadius: 5, padding: "5px 12px", fontSize: 13, cursor: "pointer" }}>
-                        Sửa
-                      </button>
-                      <button onClick={() => handleDelete(p.id, p.name)}
-                        style={{ background: "#fee2e2", color: "#991b1b", border: "1px solid #fca5a5", borderRadius: 5, padding: "5px 12px", fontSize: 13, cursor: "pointer" }}>
-                        Xóa
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {products.length === 0 && (
-                <tr>
-                  <td colSpan={5} style={{ padding: 32, textAlign: "center", color: "#9ca3af" }}>
-                    Chưa có sản phẩm nào
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {products.map((p) => (
+            <div key={p.id} style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 12, padding: 14, display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <img src={p.image} alt={p.name}
+                style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 8, flexShrink: 0, background: "#f3f4f6" }}
+                onError={(e) => { (e.target as HTMLImageElement).src = "https://via.placeholder.com/72"; }} />
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontWeight: 600, fontSize: 15, marginBottom: 3 }}>{p.name}</div>
+                <div style={{ color: "#2563eb", fontWeight: 500, fontSize: 14, marginBottom: 4 }}>
+                  {p.price.toLocaleString("vi-VN")} ₫
+                </div>
+                <div style={{ fontSize: 13, color: "#6b7280", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+                  {p.description}
+                </div>
+                <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                  <button onClick={() => openEdit(p)}
+                    style={{ flex: 1, background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d", borderRadius: 7, padding: "8px", fontSize: 14, cursor: "pointer", fontWeight: 500 }}>
+                    ✏️ Sửa
+                  </button>
+                  <button onClick={() => handleDelete(p.id, p.name)}
+                    style={{ flex: 1, background: "#fee2e2", color: "#991b1b", border: "1px solid #fca5a5", borderRadius: 7, padding: "8px", fontSize: 14, cursor: "pointer", fontWeight: 500 }}>
+                    🗑️ Xóa
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
