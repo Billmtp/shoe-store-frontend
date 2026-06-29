@@ -22,9 +22,13 @@ function Admin() {
 
   const load = async () => {
     setLoading(true);
-    const res = await fetch(API);
-    const data = await res.json();
-    setProducts(data);
+    try {
+      const res = await fetch(API);
+      const data = await res.json();
+      setProducts(Array.isArray(data) ? data : []);
+    } catch {
+      setProducts([]);
+    }
     setLoading(false);
   };
 
@@ -106,7 +110,6 @@ function Admin() {
         </div>
       )}
 
-      {/* Form thêm / sửa */}
       {showForm && (
         <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: 20, marginBottom: 24 }}>
           <h2 style={{ marginBottom: 16, fontSize: 18 }}>{editingId ? "Sửa sản phẩm" : "Thêm sản phẩm"}</h2>
@@ -145,7 +148,6 @@ function Admin() {
         </div>
       )}
 
-      {/* Nút thêm */}
       {!showForm && (
         <button onClick={openAdd}
           style={{ background: "#2563eb", color: "#fff", border: "none", borderRadius: 6, padding: "9px 18px", fontSize: 14, cursor: "pointer", marginBottom: 20 }}>
@@ -153,7 +155,6 @@ function Admin() {
         </button>
       )}
 
-      {/* Bảng sản phẩm */}
       {loading ? (
         <p>Đang tải...</p>
       ) : (
